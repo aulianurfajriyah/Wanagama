@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="docs/images/favicon.ico"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+      integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+      crossorigin=""
+    />
+
+    <link rel="stylesheet" href="/main.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Poppins"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <h1 id="title-petak">Peta Interaktif</h1>
+    <div class="main">
+      <div id="map" class="map"></div>
+      <div class="content">
+        <div class="title-petak" id="name">Petak 1</div>
+        <div class="description">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+          culpa qui officia deserunt mollit anim id est laborum.
+        </div>
+        <div class="images">
+          <img src="https://picsum.photos/200/300" alt="" class="image-petak" />
+          <img src="https://picsum.photos/200/300" alt="" class="image-petak" />
+          <img src="https://picsum.photos/200/300" alt="" class="image-petak" />
+          <img src="https://picsum.photos/200/300" alt="" class="image-petak" />
+        </div>
+        <div class="fungsi">buat apa</div>
+        <div class="potensi">di dalamnya ada apa aja</div>
+      </div>
+    </div>
+  </body>
+
+  <!-- JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+    crossorigin=""
+  ></script>
+  <script src="/shp/wanagama.js"></script>
+  <script src="/shp/wanagama-detail.js"></script>
+  <script src="/shp/detail.js"></script>
+  <script>
+    // https://leafletjs.com/examples/choropleth/
+
+    var map = L.map("map").setView([-7.9, 110.5325], 14);
+
+    var tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      minZoom: 14,
+      maxZoom: 19,
+      attribution:
+        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+
+    var geojson = L.geoJson(wanagamaData, {
+      onEachFeature: onEachFeature,
+    });
+
+    var geojsonDetail = L.geoJson(wanagamaDetailData, {
+      style: { fillColor: "yellow", color: "green" },
+      onEachFeature: onEachFeature,
+    });
+
+    var layerGroup = new L.LayerGroup();
+    layerGroup.addTo(map);
+    layerGroup.addLayer(geojson);
+
+    async function onClickHandler(e) {
+      console.log(e.target.feature.properties.name);
+      document.getElementById("name").innerHTML =
+        e.target.feature.properties.name;
+      map.fitBounds(e.target.getBounds());
+    }
+
+    function onEachFeature(feature, layer) {
+      layer.on({
+        click: onClickHandler,
+      });
+    }
+    map.on("zoom", function (e) {
+      var currZoom = map.getZoom();
+      console.log(currZoom);
+      if (currZoom > 14) {
+        layerGroup.removeLayer(geojson);
+        layerGroup.addLayer(geojsonDetail);
+      } else {
+        layerGroup.removeLayer(geojsonDetail);
+        layerGroup.addLayer(geojson);
+      }
+    });
+  </script>
+</html>
