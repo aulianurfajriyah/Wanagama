@@ -6,10 +6,9 @@ getData();
 const map = L.map('map').setView([-7.9, 110.5325], 14);
 
 const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-	minZoom: 14,
+	minZoom: 2,
 	maxZoom: 19,
-	attribution:
-		'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 }).addTo(map);
 
 // geojson initiate

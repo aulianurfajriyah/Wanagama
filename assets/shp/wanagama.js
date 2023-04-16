@@ -1,4 +1,4 @@
-var wanagamaData = {
+const wanagamaData = {
 	type: 'FeatureCollection',
 	features: [
 		{
